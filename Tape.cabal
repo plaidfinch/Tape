@@ -6,7 +6,7 @@ version:             0.4.0.0
 synopsis:            Bidirectionally infinite streams, akin to the tape of a Turing machine.
 -- description:         
 -- license:             
-license-file:        LICENSE
+-- license-file:        LICENSE
 author:              Kenneth Foner
 maintainer:          kenny.foner@gmail.com
 -- copyright:           
