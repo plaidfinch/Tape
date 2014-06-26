@@ -1,3 +1,17 @@
+{- |
+Module      :  Data.Stream.Tape
+Description :  Two-way infinite streams, akin to a Turing machine's tape.
+Copyright   :  Copyright (c) 2014 Kenneth Foner
+
+Maintainer  :  kenneth.foner@gmail.com
+Stability   :  experimental
+Portability :  non-portable
+
+This module implements two-way infinite streams with a focused element, akin to a Turing machine's tape. This structure
+is also known by the name of a list zipper (although in this case it's a list zipper with the additional criterion that
+the list is infinite in both directions).
+-}
+
 {-# LANGUAGE DeriveFunctor     #-}
 {-# LANGUAGE FlexibleInstances #-}
 
@@ -36,9 +50,7 @@ iterate :: (a -> a) -- ^ leftwards iteration function
         -> Tape a
 iterate prev next =
    unfold (dup . prev) id (dup . next)
-
-dup :: a -> (a,a)
-dup    a =  (a,a)
+   where dup a = (a,a)
 
 -- | Given an enumerable type, produce the @Tape@ where the left side is the sequence of predecessors,
 --   and the right side is the sequence of successors.
@@ -76,9 +88,11 @@ instance Distributive Tape where
              (fmap focus)
              (fmap (focus . moveR) &&& fmap moveR)
 
+-- | The functions @moveR@ and @moveL@ move the focus on the tape right and left, respectively.
 moveL, moveR :: Tape a -> Tape a
 moveL (Tape (Cons l ls) c rs) = Tape ls l (Cons c rs)
 moveR (Tape ls c (Cons r rs)) = Tape (Cons c ls) r rs
 
+-- | Gives a @Tape@ containing infinite copies of the given element.
 tapeOf :: a -> Tape a
 tapeOf = pure
