@@ -5,14 +5,15 @@ name:                Tape
 version:             0.4.0.0
 synopsis:            Bidirectionally infinite streams, akin to the tape of a Turing machine.
 -- description:         
--- license:             
--- license-file:        LICENSE
+homepage:            https://github.com/kwf/Tape
+license:             BSD3
+license-file:        LICENSE
 author:              Kenneth Foner
 maintainer:          kenny.foner@gmail.com
 -- copyright:           
 category:            Data
 build-type:          Simple
--- extra-source-files:  
+extra-source-files:  README.md
 cabal-version:       >=1.10
 
 library
