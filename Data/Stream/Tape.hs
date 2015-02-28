@@ -28,10 +28,22 @@ import qualified Data.Stream as S
 import Prelude hiding ( iterate , take )
 
 -- | A @Tape@ is like a Turing-machine tape: infinite in both directions, with a focus in the middle.
-data Tape a = Tape { viewL :: Stream a -- ^ the side of the @Tape@ left of @focus@
-                   , focus :: a        -- ^ the focused element
-                   , viewR :: Stream a -- ^ the side of the @Tape@ right of @focus@
+data Tape a = Tape { _viewL :: Stream a -- ^ the side of the @Tape@ left of @focus@
+                   , _focus :: a        -- ^ the focused element
+                   , _viewR :: Stream a -- ^ the side of the @Tape@ right of @focus@
                    } deriving ( Functor )
+
+-- | Lens compatible with lens.
+viewL :: Functor f => (Stream a -> f (Stream a)) -> Tape a -> f (Tape a)
+viewL f (Tape ls c rs) = (\ls' -> Tape ls' c rs) <$> f ls
+
+-- | Lens compatible with lens.
+focus :: Functor f => (a -> f a) -> Tape a -> f (Tape a)
+focus f (Tape ls c rs) = (\c' -> Tape ls c' rs) <$> f c
+
+-- | Lens compatible with lens.
+viewR :: Functor f => (Stream a -> f (Stream a)) -> Tape a -> f (Tape a)
+viewR f (Tape ls c rs) = Tape ls c <$> f rs
 
 -- | Produce a @Tape@ from a seed value, ala unfoldr for lists, or unfold for @Stream@s.
 unfold :: (c -> (a,c)) -- ^ leftwards unfolding function
@@ -84,9 +96,9 @@ instance Applicative Tape where
 --   be made into a @Distributive@, as there's no way to extract the index from the functor.
 instance Distributive Tape where
    distribute =
-      unfold (fmap (focus . moveL) &&& fmap moveL)
-             (fmap focus)
-             (fmap (focus . moveR) &&& fmap moveR)
+      unfold (fmap (_focus . moveL) &&& fmap moveL)
+             (fmap _focus)
+             (fmap (_focus . moveR) &&& fmap moveR)
 
 -- | The functions @moveR@ and @moveL@ move the focus on the tape right and left, respectively.
 moveL, moveR :: Tape a -> Tape a
