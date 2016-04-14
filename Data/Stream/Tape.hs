@@ -96,3 +96,7 @@ moveR (Tape ls c (Cons r rs)) = Tape (Cons c ls) r rs
 -- | Gives a @Tape@ containing infinite copies of the given element.
 tapeOf :: a -> Tape a
 tapeOf = pure
+
+-- | Maps an old focus value to a new focus value.
+modify :: (a -> a) -> Tape a -> Tape a
+modify f tape@(Tape _ c _) = tape { focus = f c }
